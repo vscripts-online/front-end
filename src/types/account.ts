@@ -28,3 +28,8 @@ export interface ITotalStorageResponse {
   total_storage: string;
   total_accounts: number;
 }
+
+export interface IUpdateLabelDTO {
+  _id: string;
+  label: string;
+}

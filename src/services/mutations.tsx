@@ -4,6 +4,7 @@ import {
   IDeleteAccountDTO,
   ILoginUrlGoogleDTO,
   ILoginUrlGoogleDTOResponse,
+  IUpdateLabelDTO,
 } from "@/types/account";
 import {
   DefaultError,
@@ -19,6 +20,7 @@ import {
   loginUrlGoogle,
   register,
   setTotalDrive,
+  update_account_label,
   update_user_file,
   upload,
 } from "./api";
@@ -153,6 +155,31 @@ export function useUpdateUserfile(
       queryClient.invalidateQueries({
         queryKey: ["user-files", { file_id: _id }],
       });
+      options.onSuccess ? options.onSuccess(data, variables, context) : void 0;
+    },
+  });
+
+  return mutation;
+}
+
+export function useUpdateAccountLabel(
+  options: CustomOptions<boolean, IUpdateLabelDTO> = {}
+) {
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    ...options,
+    mutationFn: (data: IUpdateLabelDTO) => update_account_label(data),
+    onSuccess(data, variables, context) {
+      queryClient.setQueryData(["accounts"], (values: IAccount[]) =>
+        values.map((value) => {
+          if (value._id === variables._id) {
+            return { ...value, label: variables.label };
+          }
+
+          return value;
+        })
+      );
       options.onSuccess ? options.onSuccess(data, variables, context) : void 0;
     },
   });

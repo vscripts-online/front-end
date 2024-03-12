@@ -5,6 +5,7 @@ import {
   ILoginUrlGoogleDTO,
   ILoginUrlGoogleDTOResponse,
   ITotalStorageResponse,
+  IUpdateLabelDTO,
 } from "@/types/account";
 import { IFile, IUpdateFileDTO, IUploadDTO } from "@/types/file";
 import {
@@ -110,4 +111,8 @@ export const getUserFile = async (_id: string) => {
 
 export const update_user_file = async (_id: string, data: IUpdateFileDTO) => {
   return await axiosInstance.put<IFile>("/user/files/" + _id, data);
+};
+
+export const update_account_label = async (data: IUpdateLabelDTO) => {
+  return await axiosInstance.put<boolean>("/account/update_label", data);
 };

@@ -71,7 +71,11 @@ export function AccountForm(props: Props) {
             <FormItem className="pt-3">
               <FormLabel>Label (optional)</FormLabel>
               <FormControl>
-                <Input placeholder="Ex: account@gmail.com" {...field} />
+                <Input
+                  placeholder="Ex: account@gmail.com"
+                  {...field}
+                  disabled={!!account?._id}
+                />
               </FormControl>
               <FormDescription>
                 Optionally you can label this account
