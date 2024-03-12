@@ -1,3 +1,5 @@
+import { AxiosProgressEvent } from "axios";
+
 export interface IFile {
   _id: string;
   name?: string;
@@ -36,6 +38,7 @@ export interface IUploadDTO {
   file_name: string;
   file: File;
   headers: IKeyValue[];
+  progress?: (progress: AxiosProgressEvent) => void;
 }
 
 export interface IUpdateFileDTO {

@@ -29,9 +29,10 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.response.use(
   (res) => res,
   (error) => {
+    console.log("error", error);
     if (error instanceof AxiosError) {
       const message = error.response?.data?.message || ["Error"];
-      throw message[0];
+      throw Array.isArray(message) ? message[0] : message;
     }
   }
 );
@@ -72,7 +73,13 @@ export const getTotalUsers = async () => {
 };
 
 export const getMe = async () => {
-  return (await axiosInstance.get<IUser>("/user/me")).data;
+  return (
+    await axiosInstance.get<IUser>("/user/me", {
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("token"),
+      },
+    })
+  ).data;
 };
 
 export const getTotalStorage = async () => {
@@ -98,6 +105,9 @@ export const upload = async (data: IUploadDTO) => {
 
   return await axiosInstance.post<IFile>("/upload", formData, {
     headers: { "Content-Type": "multipart/form-data" },
+    onUploadProgress(progressEvent) {
+      data.progress && data.progress(progressEvent);
+    },
   });
 };
 
@@ -115,4 +125,12 @@ export const update_user_file = async (_id: string, data: IUpdateFileDTO) => {
 
 export const update_account_label = async (data: IUpdateLabelDTO) => {
   return await axiosInstance.put<boolean>("/account/update_label", data);
+};
+
+export const sync_size = async (id: string) => {
+  return await axiosInstance.post<boolean>("/account/sync_size/" + id);
+};
+
+export const delete_file = async (id: string) => {
+  return await axiosInstance.delete<boolean>("/user/files/" + id);
 };

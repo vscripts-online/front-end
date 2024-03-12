@@ -10,6 +10,7 @@ export interface IAccount {
   access_token_expiry_time?: number;
   storage_size?: string;
   available_size?: string;
+  sync_time?: string;
 }
 
 export type ICreateAccountDTO = Pick<IAccount, "type" | "label">;

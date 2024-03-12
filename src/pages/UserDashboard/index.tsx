@@ -9,11 +9,13 @@ import { Plus } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
+import { ReloadIcon } from "@radix-ui/react-icons";
 
 export default function UserDashbard() {
   const [headers, setHeaders] = useState<IKeyValue[]>([]);
   const [file, setFile] = useState<File>();
   const [fileName, setFileName] = useState<string>();
+  const [progress, setProgress] = useState<string>();
 
   const uploadMutation = useUpload({
     onSuccess() {
@@ -21,6 +23,7 @@ export default function UserDashbard() {
     },
     onError(error: any) {
       try {
+        console.log("onerrorrr", error);
         const message = getErrorMessage(error);
         toast.error(message);
       } catch (error) {
@@ -52,6 +55,9 @@ export default function UserDashbard() {
       file,
       headers: post_headers,
       file_name: fileName || "",
+      progress(progress) {
+        setProgress((progress.progress + "").slice(2, 4));
+      },
     });
   };
 
@@ -84,8 +90,14 @@ export default function UserDashbard() {
             value={fileName}
             onChange={(e) => setFileName(e.target.value)}
           />
-          <Button onClick={handleUpload}>Upload</Button>
-          <p>
+          <div className="self-center">{progress && "%" + progress}</div>
+          <Button onClick={handleUpload} disabled={uploadMutation.isPending}>
+            Upload
+            {uploadMutation.isPending && (
+              <ReloadIcon className="ml-2 h-4 w-4 animate-spin" />
+            )}
+          </Button>
+          <div className="self-center">
             {uploadMutation.isSuccess && (
               <Link
                 to={
@@ -93,10 +105,10 @@ export default function UserDashbard() {
                 }
                 target="_blank"
               >
-                File successfully uploaded. Click to view.
+                File successfully uploaded. &nbsp; Click to view.
               </Link>
             )}
-          </p>
+          </div>
         </div>
         <div className="col-span-2">
           <div className="mb-2">Headers</div>
@@ -109,7 +121,11 @@ export default function UserDashbard() {
               onDelete={() => onDelete(index)}
             />
           ))}
-          <Button className="mt-3 mx-auto block px-16" onClick={handleAdd}>
+          <Button
+            className="mt-3 mx-auto block px-16"
+            onClick={handleAdd}
+            disabled={uploadMutation.isPending}
+          >
             <Plus />
           </Button>
         </div>

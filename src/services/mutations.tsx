@@ -16,10 +16,12 @@ import { AxiosResponse } from "axios";
 import {
   createAccount,
   deleteAccount,
+  delete_file,
   login,
   loginUrlGoogle,
   register,
   setTotalDrive,
+  sync_size,
   update_account_label,
   update_user_file,
   upload,
@@ -180,6 +182,38 @@ export function useUpdateAccountLabel(
           return value;
         })
       );
+      options.onSuccess ? options.onSuccess(data, variables, context) : void 0;
+    },
+  });
+
+  return mutation;
+}
+
+export function useSyncSize(options: CustomOptions<boolean, string> = {}) {
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    ...options,
+    mutationFn: (id: string) => sync_size(id),
+    onSuccess(data, variables, context) {
+      queryClient.invalidateQueries({ queryKey: ["accounts"] });
+      options.onSuccess ? options.onSuccess(data, variables, context) : void 0;
+    },
+  });
+
+  return mutation;
+}
+
+export function useDeleteFile(options: CustomOptions<boolean, string> = {}) {
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    ...options,
+    mutationFn: (id: string) => delete_file(id),
+    onSuccess(data, variables, context) {
+      queryClient.invalidateQueries({
+        queryKey: ["user-files"],
+      });
       options.onSuccess ? options.onSuccess(data, variables, context) : void 0;
     },
   });

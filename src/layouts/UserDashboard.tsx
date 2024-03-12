@@ -1,16 +1,13 @@
 import NavLink from "@/components/nav-link";
+import Profile from "@/components/profile";
 import {
   NavigationMenu,
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
-import { Link, Outlet } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import { Toaster } from "sonner";
 
 function UserDashboardHeader() {
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-  };
-
   return (
     <div className="flex p-5 border-b border-black">
       <Toaster richColors />
@@ -25,14 +22,7 @@ function UserDashboardHeader() {
       </div>
 
       <div className="flex items-center">
-        <Link
-          to="/"
-          className="font-semibold border-black"
-          onClick={handleLogout}
-          style={{ borderBottom: "1px solid black" }}
-        >
-          Logout
-        </Link>
+        <Profile />
       </div>
     </div>
   );

@@ -1,17 +1,27 @@
 import KeyValue from "@/components/key-value";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
+import { clearify_headers, formatByte } from "@/lib/utils";
+import { useDeleteFile, useUpdateUserfile } from "@/services/mutations";
 import { useUserFile } from "@/services/queries";
 import { IKeyValue } from "@/types/file";
+import { Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
-import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
-import { clearify_headers, formatByte } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
-import { Separator } from "@/components/ui/separator";
-import { Link } from "react-router-dom";
-import { useUpdateUserfile } from "@/services/mutations";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 export default function UserFileDetail() {
@@ -20,6 +30,7 @@ export default function UserFileDetail() {
 
   const [headers, setHeaders] = useState<IKeyValue[]>(data?.headers || []);
   const [fileName, setFileName] = useState<string>(data?.file_name || "");
+  const [deleteDialog, setDeleteDialog] = useState<boolean>(false);
 
   const updateFileMutation = useUpdateUserfile(id || "", {
     onSuccess() {
@@ -27,12 +38,16 @@ export default function UserFileDetail() {
     },
   });
 
+  const deleteFileMutation = useDeleteFile();
+
   useEffect(() => {
     if (data) {
-      setHeaders(data!.headers);
-      setFileName(data!.file_name);
+      setHeaders(data!.headers || []);
+      setFileName(data!.file_name || "");
     }
   }, [data]);
+
+  const navigate = useNavigate();
 
   if (isLoading) {
     return "Loading...";
@@ -67,12 +82,47 @@ export default function UserFileDetail() {
     updateFileMutation.mutate({ file_name: fileName, headers: post_headers });
   };
 
+  const deleteFile = () => {
+    deleteFileMutation.mutate(data._id, {
+      onSuccess() {
+        toast.success("Successfull");
+        navigate("/dashboard/files");
+      },
+    });
+  };
+
   return (
     <>
       <div className="flex flex-col m-4 gap-3">
-        <Button className="px-5 self-center" onClick={handleSave}>
-          Save
-        </Button>
+        <div className="flex self-center gap-3">
+          <Button
+            className="px-5"
+            variant="destructive"
+            onClick={() => setDeleteDialog(true)}
+          >
+            Delete
+            <AlertDialog open={deleteDialog} onOpenChange={setDeleteDialog}>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This action cannot be undone. This will permanently delete
+                    file.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={deleteFile}>
+                    Continue
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </Button>
+          <Button className="px-5" onClick={handleSave}>
+            Save
+          </Button>
+        </div>
         <Separator className="my-5" />
         <Button className="px-5 self-center">
           <Link

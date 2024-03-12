@@ -5,17 +5,16 @@ import "./index.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AccountsProvider } from "./contexts/accounts.context.tsx";
 import AdminDashboardLayout from "./layouts/AdminDashboard.tsx";
-import UserDashboardLayout from "./layouts/UserDashboard.tsx";
 import RootLayout from "./layouts/Root.tsx";
+import UserDashboardLayout from "./layouts/UserDashboard.tsx";
 import FilesDashbard from "./pages/AdminDashboard/Files/index.tsx";
 import AdminDashboard from "./pages/AdminDashboard/index.tsx";
 import UsersDashbard from "./pages/AdminDashboard/Users/index.tsx";
 import ErrorPage from "./pages/error.tsx";
 import OnBoard from "./pages/Onboard/index.tsx";
-import UserDashbard from "./pages/UserDashboard/index.tsx";
-import UserFilesDashbard from "./pages/UserDashboard/Files/index.tsx";
 import UserFileDetail from "./pages/UserDashboard/FileDetail/index.tsx";
-import React from "react";
+import UserFilesDashbard from "./pages/UserDashboard/Files/index.tsx";
+import UserDashbard from "./pages/UserDashboard/index.tsx";
 
 const router = createBrowserRouter([
   {

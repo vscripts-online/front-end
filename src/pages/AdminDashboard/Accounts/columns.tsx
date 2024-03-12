@@ -11,11 +11,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { useAccountsContext } from "@/contexts/accounts.context";
 import { formatByteRow } from "@/lib/utils";
-import { useUpdateAccountLabel } from "@/services/mutations";
+import { useSyncSize, useUpdateAccountLabel } from "@/services/mutations";
 import { IAccount } from "@/types/account";
 import { ColumnDef } from "@tanstack/react-table";
 import { Check, FilePenLine, MoreHorizontal, X } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 
 interface Props {
   data: IAccount;
@@ -101,6 +102,13 @@ export const columns: ColumnDef<IAccount>[] = [
     },
   },
   {
+    accessorKey: "sync_time",
+    header: "Synced At",
+    cell: ({ row }) => {
+      return new Date(row.original.sync_time as string).toLocaleString();
+    },
+  },
+  {
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
@@ -112,6 +120,12 @@ export const columns: ColumnDef<IAccount>[] = [
       const handleUpdateButton = (account: IAccount) => {
         setAccount(account);
       };
+
+      const syncSizeMutation = useSyncSize({
+        onSuccess() {
+          toast.success("Synced");
+        },
+      });
 
       return (
         <DropdownMenu open={open} onOpenChange={setOpen}>
@@ -137,6 +151,12 @@ export const columns: ColumnDef<IAccount>[] = [
               onClick={() => handleUpdateButton(row.original)}
             >
               Update
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              className="cursor-pointer font-semibold text-purple-600"
+              onClick={() => syncSizeMutation.mutate(row.original._id)}
+            >
+              Sync Size
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

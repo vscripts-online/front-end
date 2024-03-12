@@ -39,6 +39,7 @@ export function formatByte(size: string) {
 }
 
 export function getErrorMessage(error: any) {
+  console.log("getErrorMessage", error);
   if (typeof error === "string") {
     return error;
   }
