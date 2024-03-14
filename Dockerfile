@@ -2,7 +2,7 @@ ARG NODE_VERSION=20.7.0
 
 FROM node:${NODE_VERSION}-alpine as build
 
-ARG VITE_API_URL=http://localhost:3000
+ARG VITE_API_URL=https://api.cdn.vscripts.online
 
 WORKDIR /app
 
