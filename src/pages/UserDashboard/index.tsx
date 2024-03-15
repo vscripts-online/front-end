@@ -101,7 +101,9 @@ export default function UserDashbard() {
             {uploadMutation.isSuccess && (
               <Link
                 to={
-                  "http://localhost:3000/files/" + uploadMutation.data.data.slug
+                  import.meta.env.VITE_API_URL +
+                  "/files/" +
+                  uploadMutation.data.data.slug
                 }
                 target="_blank"
               >
