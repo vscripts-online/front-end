@@ -5,6 +5,10 @@ services:
     build:
       context: .
       args:
+        - VITE_AUTH_HOST=http://localhost:3000
+        - VITE_AUTH_CLIENT_ID=JsrmNLUgCCXkxv6uEN4GHQ
+        - VITE_AUTH_CALLBACK=http://localhost:5173
         - VITE_API_URL=http://localhost:3002
+
     ports:
       - 80:80
